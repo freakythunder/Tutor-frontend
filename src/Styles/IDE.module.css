@@ -1,0 +1,12 @@
+.ide {
+    background-color: #f4f6f8;
+    border-right: 2px solid #ccc;
+    padding: 20px;
+    min-height: 500px;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.text {
+    color: #333;
+    font-size: 16px;
+}

@@ -1,0 +1,7 @@
+.chatInterface {
+    background-color: #e6e8ea;
+    padding: 20px;
+    min-height: 500px;
+    border-left: 2px solid #ccc;
+    font-family: 'Arial', sans-serif;
+}
