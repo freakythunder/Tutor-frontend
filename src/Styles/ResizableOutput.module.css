@@ -1,0 +1,56 @@
+/* src/Styles/ResizableOutput.module.css */
+.outputContainer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background-color: #1e1e1e;
+    border-top: 1px solid #333;
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+  }
+  
+  .resizeHandle {
+    height: 5px;
+    background-color: #333;
+    cursor: ns-resize;
+  }
+  
+  .outputHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #252526;
+  }
+  
+  .outputHeader h3 {
+    margin: 0;
+  }
+  
+  .closeButton {
+    background-color: transparent;
+    color: #0e639c;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .closeButton:hover {
+    text-decoration: underline;
+  }
+  
+  .outputContent {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+  }
+  
+  .loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    font-style: italic;
+    color: #888;
+  }
