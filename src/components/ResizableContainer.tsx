@@ -12,10 +12,10 @@ const ResizableContainer: React.FC = () => {
     if (!isResizing.current || !containerRef.current) return;
 
     const containerWidth = containerRef.current.offsetWidth;
-    const newLeftWidth = (e.clientX / containerWidth) * 100; // Calculate width dynamically
+    const newLeftWidth = (e.clientX / containerWidth) * 100;
 
     if (newLeftWidth > 20 && newLeftWidth < 80) {
-      setLeftWidth(newLeftWidth); // Adjust IDE width dynamically
+      setLeftWidth(newLeftWidth);
     }
   };
 
@@ -33,15 +33,10 @@ const ResizableContainer: React.FC = () => {
 
   return (
     <div className={styles.container} ref={containerRef}>
-      {/* IDE on the left */}
       <div className={styles.leftPane} style={{ width: `${leftWidth}%` }}>
         <IDE />
       </div>
-      
-      {/* Divider between IDE and Chat Interface */}
       <div className={styles.resizer} onMouseDown={handleMouseDown} />
-
-      {/* Chat Interface on the right */}
       <div className={styles.rightPane} style={{ width: `${100 - leftWidth}%` }}>
         <ChatInterface />
       </div>

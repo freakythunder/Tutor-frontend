@@ -3,7 +3,7 @@ import api from './api';
 
 export const executeCode = async (code: string) => {
   try {
-    const response = await api.post('/execute', { code });
+    const response = await api.post('/code/execute', { code });
     return response.data;
   } catch (error) {
     console.error('Error executing code:', error);
