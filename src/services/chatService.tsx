@@ -6,9 +6,15 @@ import api from './api';
 // src/services/chatService.tsx
 
 export interface Message {
+  user_id: string;
   _id: string;
   userMessage: string;
-  aiResponse: string;
+  aiResponse: string | {
+    user_id: string | null;
+    userMessage: string;
+    aiResponse: string;
+    timestamp: string;
+  };
   timestamp: string;
 }
 
@@ -17,6 +23,7 @@ interface SingleMessageResponse {
   data: {
     response: string;
     savedMessage: {
+      user_id: string | null; // Add this line
       userMessage: string;
       aiResponse: string;
       timestamp: string;

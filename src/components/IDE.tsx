@@ -3,8 +3,10 @@ import Editor, { Monaco } from '@monaco-editor/react';
 import styles from '../Styles/IDE.module.css';
 import ResizableOutput from './ResizableOutput';
 import { executeCode } from '../services/codeService';
-
-const IDE: React.FC = () => {
+interface IDEProps {
+  onFeedbackReceived: (feedback: string) => void;
+}
+const IDE: React.FC<IDEProps> = ({ onFeedbackReceived }) => {
   const [code, setCode] = useState<string>('');
   const [output, setOutput] = useState<string>('');
   const [showOutput, setShowOutput] = useState<boolean>(false);
@@ -19,9 +21,13 @@ const IDE: React.FC = () => {
     setIsLoading(true);
     try {
       const result = await executeCode(code);
-      setOutput(result.data.output);
-      console.log(result);
-      setShowOutput(true);
+      if (result.success) {
+        setOutput(result.data.output);
+        setShowOutput(true);
+        // Send feedback to ChatInterface
+        console.log("Feedback received:");
+        onFeedbackReceived(result.data.feedback);
+      }
     } catch (error) {
       setOutput('Error while executing code.');
     } finally {

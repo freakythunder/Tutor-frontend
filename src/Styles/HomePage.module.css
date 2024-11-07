@@ -1,0 +1,87 @@
+/* src/Styles/HomePage.module.css */
+.homePage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  background-color: #f0f4f8; /* Light background for a fresh look */
+  padding: 20px;
+}
+
+.container {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+  max-width: 400px; /* Limit the width for better focus */
+  width: 100%;
+  text-align: center;
+}
+
+h1 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  color: #2c3e50; /* Darker text for better readability */
+  margin-bottom: 20px;
+}
+
+h2 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  color: #3498db; /* Primary color for headings */
+  margin-bottom: 20px;
+}
+
+.authForm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px; /* Space between form elements */
+}
+
+input[type="text"],
+input[type="password"] {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+  border-color: #3498db; /* Highlight border on focus */
+  outline: none;
+}
+
+.submitButton {
+  background-color: #3498db;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submitButton:hover {
+  background-color: #2980b9; /* Darker shade on hover */
+}
+
+.error {
+  color: #e74c3c; /* Red for error messages */
+  margin-top: 10px;
+}
+
+.switchButton {
+  background: none;
+  border: none;
+  color: #3498db;
+  cursor: pointer;
+  font-size: 14px;
+  text-decoration: underline;
+}
+
+.switchButton:hover {
+  color: #2980b9; /* Darker shade on hover */
+}
