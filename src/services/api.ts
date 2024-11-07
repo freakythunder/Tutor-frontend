@@ -1,8 +1,11 @@
 // src/services/api.ts
 import axios from 'axios';
 
+const apiUrl = process.env.REACT_APP_API_URL;
+console.log('API URL:', apiUrl); // For debugging
+
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL,
+  baseURL: apiUrl,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
@@ -14,25 +17,22 @@ api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
     if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
 // Response interceptor
 api.interceptors.response.use(
-  (response) => {
-    return response;
-  },
+  (response) => response,
   (error) => {
-    if (error.response && error.response.status === 401) {
-      // Handle unauthorized access (e.g., redirect to login page)
+    console.error('API Error:', error);
+    if (error.response?.status === 401) {
       localStorage.removeItem('token');
-      window.location.href = '/';
+      localStorage.removeItem('username');
+      // Don't redirect here to avoid refresh loops
     }
     return Promise.reject(error);
   }

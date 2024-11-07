@@ -14,27 +14,36 @@ const HomePage: React.FC = () => {
   const { login } = useAuth();
 
   const handleAuth = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent form submission from refreshing the page
     setErrorMessage('');
 
     const endpoint = isLogin ? '/auth/login' : '/auth/register';
 
     try {
-      const response = await api.post(endpoint, { username, password });
+      const response = await api.post(endpoint, { 
+        username, 
+        password 
+      });
       
-      if (response.data.success) {
-        login(response.data.data.username, response.data.data.token);
+      console.log('Auth response:', response.data.data); // Debug log
+
+      if (response.data && response.data.data) {
+        // Update this based on your actual API response structure
+        login(username, response.data.data.token);
         navigate('/main');
       } else {
-        setErrorMessage(response.data.message || 'An error occurred.');
+        setErrorMessage('Invalid response from server');
+        console.error('Invalid response structure:', response.data);
       }
-    } catch (error) {
-      setErrorMessage('Failed to authenticate. Please try again.');
+    } catch (error: any) {
+      // Better error handling
+      const errorMsg = error.response?.data?.message || 
+                      error.message || 
+                      'Failed to authenticate. Please try again.';
+      setErrorMessage(errorMsg);
       console.error('Authentication error:', error);
     }
   };
-
-
 
   return (
     <div className={styles.homePage}>
