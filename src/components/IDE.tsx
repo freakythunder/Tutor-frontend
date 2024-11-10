@@ -88,7 +88,7 @@ const IDE: React.FC<IDEProps> = ({ onFeedbackReceived }) => {
       <div className={styles.editorContainer}>
         <Editor
           height="100%"
-          defaultLanguage="python"
+          defaultLanguage="javascript"
           value={code}
           onChange={handleCodeChange}
           theme="vs-dark"

@@ -3,16 +3,31 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from '../Styles/Navbar.module.css';
 import { useAuth } from '../context/AuthContext';
+import api from '../services/api'; // Make sure to import api
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { username, isAuthenticated, logout } = useAuth();
 
-  const handleLogout = () => {
-    logout();
-    setIsMenuOpen(false);
-    navigate('/');
+  const handleLogout = async () => {
+    try {
+      // Send logout request to backend
+      await api.post('/auth/logout');
+      
+      // Call local logout method to clear local storage and state
+      logout();
+      
+      // Close menu and navigate to home
+      setIsMenuOpen(false);
+      navigate('/');
+    } catch (error) {
+      console.error('Logout failed:', error);
+      // Optionally, you can show an error message to the user
+      // For now, we'll still perform local logout
+      logout();
+      navigate('/');
+    }
   };
 
   const toggleMenu = () => {

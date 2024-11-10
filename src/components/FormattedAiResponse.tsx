@@ -1,5 +1,4 @@
 // src/components/FormattedAiResponse.tsx
-
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -7,18 +6,46 @@ import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import remarkGfm from 'remark-gfm';
 import styles from '../Styles/ChatInterface.module.css';
 import { ComponentPropsWithoutRef } from 'react';
+import { Message } from '../services/chatService';
 
+// Define a more flexible response type
 interface FormattedAIResponseProps {
-  response: string | { 
-    user_id: string | null; 
-    userMessage: string; 
-    aiResponse: string; 
-    timestamp: string; 
+  response: {
+    user_id?: string;
+    userMessage?: string;
+    aiResponse: string | {
+      user_id?: string;
+      userMessage?: string;
+      aiResponse?: string;
+      timestamp?: string;
+    };
+    timestamp: string;
   };
 }
 
 const FormattedAIResponse: React.FC<FormattedAIResponseProps> = ({ response }) => {
-  const responseText = typeof response === 'string' ? response : response.aiResponse;
+  // Helper function to extract markdown content
+  const extractMarkdownContent = (): string => {
+    const aiResponse = response.aiResponse;
+    
+    // If aiResponse is a string, return it directly
+    if (typeof aiResponse === 'string') {
+      return aiResponse.trim();
+    }
+    
+    // If aiResponse is an object, return its aiResponse or userMessage
+    if (typeof aiResponse === 'object') {
+      return (aiResponse.aiResponse || aiResponse.userMessage || '').trim();
+    }
+    
+    return '';
+  };
+
+  // Extract markdown content
+  const markdownContent = extractMarkdownContent();
+
+  // Render nothing if no content
+  if (!markdownContent) return null;
 
   return (
     <div className={styles.aiResponseContainer}>
@@ -48,7 +75,7 @@ const FormattedAIResponse: React.FC<FormattedAIResponseProps> = ({ response }) =
           li: ({ ...props }) => <li className={styles.bulletPoint} {...props} />,
         }}
       >
-        {responseText}
+        {markdownContent}
       </ReactMarkdown>
     </div>
   );

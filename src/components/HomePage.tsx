@@ -25,11 +25,15 @@ const HomePage: React.FC = () => {
         password 
       });
       
-      console.log('Auth response:', response.data.data); // Debug log
+      //console.log('Auth response:', response.data.data); // Debug log
 
       if (response.data && response.data.data) {
         // Update this based on your actual API response structure
-        login(username, response.data.data.token);
+        login(
+          response.data.data.username, 
+          response.data.data.token, 
+          
+        );
         navigate('/main');
       } else {
         setErrorMessage('Invalid response from server');
