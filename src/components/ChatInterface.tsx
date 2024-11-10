@@ -62,6 +62,7 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>((props, r
         );
   
         setMessages(sortedChats);
+        
         if (welcomeMessage) {
           const welcomeMsg: Message = {
             _id: Date.now().toString(),
@@ -184,7 +185,7 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>((props, r
       const newMessage: Message = {
         _id: Date.now().toString(),
         user_id: username || 'AI',
-        userMessage: "Code Execution Feedback",
+        userMessage: "",
         aiResponse: feedback,
         timestamp: new Date().toISOString()
       };
@@ -203,10 +204,12 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>((props, r
       <div className={styles.messagesContainer}>
         {messages.map((msg) => (
           <div key={msg._id} className={styles.messageWrapper}>
+        {msg.userMessage && (
             <div className={styles.userMessage}>
-              <p className={styles.messageContent}>{msg.userMessage}</p>
-              <div className={styles.timestamp}>{formatTimestamp(msg.timestamp)}</div>
+                <p className={styles.messageContent}>{msg.userMessage}</p>
+                <div className={styles.timestamp}>{formatTimestamp(msg.timestamp)}</div>
             </div>
+        )}
             {msg.aiResponse && (
               <div className={styles.aiMessage}>
                 <FormattedAIResponse response={getAIResponseMessage(msg.aiResponse)} />
