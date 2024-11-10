@@ -16,27 +16,28 @@ const HomePage: React.FC = () => {
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault(); // Prevent form submission from refreshing the page
     setErrorMessage('');
-
+  
     const endpoint = isLogin ? '/auth/login' : '/auth/register';
-
+  
     try {
       const response = await api.post(endpoint, { 
         username, 
         password 
       });
-      
-      //console.log('Auth response:', response.data.data); // Debug log
-
-      if (response.data && response.data.data) {
-        // Update this based on your actual API response structure
-        login(
-          response.data.data.username, 
-          response.data.data.token, 
-          
-        );
-        navigate('/main');
+  
+      // Check if the response indicates success
+      if (response.data && response.data.success) {
+        if (isLogin) {
+          // For login, handle the response as before
+          login(response.data.data.username, response.data.data.token);
+          navigate('/main');
+        } else {
+          // For registration, you can show a success message or navigate
+          setErrorMessage(response.data.message); // Optionally set a success message
+          // You may want to navigate to the login page or show a confirmation
+        }
       } else {
-        setErrorMessage('Invalid response from server');
+        setErrorMessage(response.data.message || 'Invalid response from server');
         console.error('Invalid response structure:', response.data);
       }
     } catch (error: any) {
