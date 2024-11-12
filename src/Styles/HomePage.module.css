@@ -1,87 +1,117 @@
 /* src/Styles/HomePage.module.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+}
+
 .homePage {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
-  background-color: #f0f4f8; /* Light background for a fresh look */
+  height: 100vh;
+  background: linear-gradient(135deg, #e0f7fa, #f8bbd0);
   padding: 20px;
 }
 
 .container {
-  background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  padding: 40px;
-  max-width: 400px; /* Limit the width for better focus */
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  padding: 40px 32px;
+  max-width: 450px;
   width: 100%;
   text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.container:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
 }
 
 h1 {
-  font-family: 'Poppins', sans-serif;
+  font-size: 2rem;
   font-weight: 600;
-  color: #2c3e50; /* Darker text for better readability */
-  margin-bottom: 20px;
-}
-
-h2 {
-  font-family: 'Poppins', sans-serif;
-  font-weight: 500;
-  color: #3498db; /* Primary color for headings */
-  margin-bottom: 20px;
+  color: #333;
+  margin-bottom: 24px;
 }
 
 .authForm {
   display: flex;
   flex-direction: column;
-  gap: 16px; /* Space between form elements */
+  align-items: center;
+  gap: 20px;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+button[type="button"] {
+  background-color: #3498db;
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+}
+
+button[type="button"]:hover {
+  background-color: #2980b9;
+  box-shadow: 0 6px 12px rgba(41, 128, 185, 0.3);
+}
+
+.loadingScreen {
+  font-size: 1.1rem;
+  color: #555;
+  font-weight: 500;
+}
+
+.error {
+  color: #e74c3c;
+  font-size: 0.9rem;
+  margin-top: 12px;
 }
 
 input[type="text"],
 input[type="password"] {
+  width: 100%;
   padding: 12px;
-  border: 1px solid #ddd;
+  border: 1px solid #ccc;
   border-radius: 8px;
   font-size: 16px;
-  transition: border-color 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 input[type="text"]:focus,
 input[type="password"]:focus {
-  border-color: #3498db; /* Highlight border on focus */
+  border-color: #3498db;
+  box-shadow: 0 0 6px rgba(52, 152, 219, 0.3);
   outline: none;
-}
-
-.submitButton {
-  background-color: #3498db;
-  color: white;
-  padding: 12px;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.submitButton:hover {
-  background-color: #2980b9; /* Darker shade on hover */
-}
-
-.error {
-  color: #e74c3c; /* Red for error messages */
-  margin-top: 10px;
 }
 
 .switchButton {
   background: none;
   border: none;
   color: #3498db;
-  cursor: pointer;
-  font-size: 14px;
+  font-size: 0.9rem;
   text-decoration: underline;
+  cursor: pointer;
+  transition: color 0.3s ease;
 }
 
 .switchButton:hover {
-  color: #2980b9; /* Darker shade on hover */
+  color: #2980b9;
 }
