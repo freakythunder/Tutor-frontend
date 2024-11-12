@@ -6,7 +6,7 @@ interface AuthContextType {
   setUsername: (username: string | null) => void;
   isAuthenticated: boolean;
   login: (username: string, token: string, welcomeMsg?: string) => void;
-  logout: () => void;
+  localLogout: () => void;
   welcomeMessage: string | null;
   clearWelcomeMessage: () => void;
 }
@@ -28,7 +28,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsAuthenticated(true);
   };
 
-  const logout = () => {
+  const localLogout = () => {
     localStorage.removeItem('username');
     localStorage.removeItem('token');
     localStorage.removeItem('welcomeMessage');
@@ -60,7 +60,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUsername, 
       isAuthenticated, 
       login, 
-      logout,
+      localLogout,
       welcomeMessage,
       clearWelcomeMessage 
     }}>

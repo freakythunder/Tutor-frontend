@@ -3,31 +3,54 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from '../Styles/Navbar.module.css';
 import { useAuth } from '../context/AuthContext';
-import api from '../services/api'; // Make sure to import api
+import api from '../services/api';
+import { useAuth0 } from "@auth0/auth0-react";
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { username, isAuthenticated, logout } = useAuth();
+  const { username, isAuthenticated,  localLogout } = useAuth(); // Corrected logout function name
+  const { logout } = useAuth0();
 
   const handleLogout = async () => {
     try {
+      console.log('Attempting to log out'); // Debug log to confirm function execution
+  
       // Send logout request to backend
-      await api.post('/auth/logout');
-      
-      // Call local logout method to clear local storage and state
-      logout();
-      
-      // Close menu and navigate to home
-      setIsMenuOpen(false);
-      navigate('/');
+      const response = await api.post('/auth/logout');
+      if(response){
+        console.log('Logout response:', response); // Debug log for successful response
+  
+        // Call local logout method to clear local storage and state
+        localLogout();
+    
+        // Close menu and navigate to home
+        setIsMenuOpen(false);
+        navigate('/');
+      }
+      else{
+        handleLogout();
+      }
+
     } catch (error) {
-      console.error('Logout failed:', error);
-      // Optionally, you can show an error message to the user
-      // For now, we'll still perform local logout
-      logout();
+      console.error('Logout request failed:', error);
+  
+      if (error.response) {
+        console.error('Server responded with:', error.response.status, error.response.data);
+      } else {
+        console.error('No response received from server or request setup failed');
+      }
+  
+      // Perform local logout even if backend logout fails
+      localLogout();
       navigate('/');
     }
+  };
+  
+
+  const handleCombinedLogout = async () => {
+    await handleLogout(); // Ensure backend logout is completed first
+    logout({ logoutParams: { returnTo: window.location.origin } });
   };
 
   const toggleMenu = () => {
@@ -46,7 +69,7 @@ const Navbar: React.FC = () => {
             {isMenuOpen && (
               <div className={styles.dropdown}>
                 <span className={styles.username}>{username}</span>
-                <button onClick={handleLogout} className={styles.logoutButton}>Logout</button>
+                <button onClick={handleCombinedLogout} className={styles.logoutButton}>Logout</button>
               </div>
             )}
           </div>
