@@ -7,7 +7,7 @@ import { useAuth } from '../context/AuthContext';
 
 
 interface ChatInterfaceRef {
-  addFeedbackMessage: (feedback: string) => void;
+  
 }
 
 interface ChatInterfaceProps {}
@@ -179,23 +179,6 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>((props, r
       minute: '2-digit'
     });
   };
-  
-  const addFeedbackMessage = useCallback((feedback: string) => {
-    setMessages(prevMessages => {
-      const newMessage: Message = {
-        _id: Date.now().toString(),
-        user_id: username || 'AI',
-        userMessage: "",
-        aiResponse: feedback,
-        timestamp: new Date().toISOString()
-      };
-      return [...prevMessages, newMessage];
-    });
-  }, [username]);
-
-  useImperativeHandle(ref, () => ({
-    addFeedbackMessage
-  }), [addFeedbackMessage]);
 
 
 

@@ -2,13 +2,15 @@
 .ideContainer {
   display: flex;
   flex-direction: column;
-  height: 100%;
   overflow: hidden;
+  height : 100%;
+  
 }
 
 .editorContainer {
-  flex: 1;
+  flex:20;
   overflow: hidden;
+  
 }
 
 /* Rest of the styles remain the same */
@@ -18,6 +20,7 @@
   display: flex;
   justify-content: flex-end;
   background-color: #252526;
+  flex :1;
 }
 
 .runButton {

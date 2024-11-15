@@ -1,12 +1,13 @@
 /* src/Styles/ResizableContainer.module.css */
 .container {
   display: flex;
-  height: 100%; /* Occupy the full viewport height */
+   /* Occupy the full viewport height */
+  height :100%;
   width: 100%;
 }
 
 .leftPane, .rightPane {
-  height: 100%;
+  height : 100%;
   overflow: hidden;
 }
 
@@ -25,5 +26,5 @@
 .rightPane {
   display: flex;
   flex-direction: column;
-  height: 100%; /* Ensure chat interface occupies full height */
+  /* Ensure chat interface occupies full height */
 }
