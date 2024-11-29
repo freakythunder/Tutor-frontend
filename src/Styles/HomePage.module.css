@@ -1,87 +1,102 @@
 /* src/Styles/HomePage.module.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+
+
+/* src/Styles/HomePage.module.css */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  font-family: 'Poppins', sans-serif;
+  color: #2c3e50;
+  background-color: #f3f6fa;
+  height: 100%;
+}
+
 .homePage {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
-  background-color: #f0f4f8; /* Light background for a fresh look */
+  height: 100vh;
+  background: linear-gradient(135deg, #3498db 0%, #8e44ad 100%);
   padding: 20px;
 }
 
 .container {
-  background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  padding: 40px;
-  max-width: 400px; /* Limit the width for better focus */
+  background-color: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  padding: 40px 30px;
+  max-width: 450px;
   width: 100%;
   text-align: center;
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 h1 {
-  font-family: 'Poppins', sans-serif;
-  font-weight: 600;
-  color: #2c3e50; /* Darker text for better readability */
-  margin-bottom: 20px;
-}
-
-h2 {
-  font-family: 'Poppins', sans-serif;
-  font-weight: 500;
-  color: #3498db; /* Primary color for headings */
-  margin-bottom: 20px;
+  font-size: 1.8rem;
+  color: #333;
+  margin-bottom: 1.2rem;
 }
 
 .authForm {
   display: flex;
   flex-direction: column;
-  gap: 16px; /* Space between form elements */
+  gap: 18px;
 }
 
-input[type="text"],
-input[type="password"] {
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 16px;
-  transition: border-color 0.3s ease;
-}
-
-input[type="text"]:focus,
-input[type="password"]:focus {
-  border-color: #3498db; /* Highlight border on focus */
-  outline: none;
-}
-
-.submitButton {
-  background-color: #3498db;
-  color: white;
+button {
+  background: linear-gradient(135deg, #3498db, #8e44ad);
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 500;
   padding: 12px;
   border: none;
   border-radius: 8px;
-  font-size: 16px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.submitButton:hover {
-  background-color: #2980b9; /* Darker shade on hover */
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 .error {
-  color: #e74c3c; /* Red for error messages */
-  margin-top: 10px;
+  color: #e74c3c;
+  background-color: #fdecea;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  margin-bottom: 15px;
+  border: 1px solid #e74c3c;
+  animation: shake 0.4s ease-in-out;
 }
 
-.switchButton {
-  background: none;
-  border: none;
-  color: #3498db;
-  cursor: pointer;
-  font-size: 14px;
-  text-decoration: underline;
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
 }
 
-.switchButton:hover {
-  color: #2980b9; /* Darker shade on hover */
+.loadingScreen {
+  font-size: 1.1rem;
+  color: #8e44ad;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
 }

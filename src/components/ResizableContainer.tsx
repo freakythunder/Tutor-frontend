@@ -1,10 +1,9 @@
 import React, { useState, useRef, useCallback } from 'react';
-import IDE from './IDE';
+import HorizontalSplitter from './horizontalSplitter';
 import ChatInterface from './ChatInterface';
 import styles from '../Styles/ResizableContainer.module.css';
 
 interface ChatInterfaceRef {
-  addFeedbackMessage: (feedback: string) => void;
 }
 
 const ResizableContainer: React.FC = () => {
@@ -36,16 +35,11 @@ const ResizableContainer: React.FC = () => {
     document.addEventListener('mouseup', handleMouseUp);
   }, [handleMouseMove, handleMouseUp]);
 
-  const handleFeedbackReceived = useCallback((feedback: string) => {
-    if (chatInterfaceRef.current) {
-      chatInterfaceRef.current.addFeedbackMessage(feedback);
-    }
-  }, []);
 
   return (
     <div className={styles.container} ref={containerRef}>
       <div className={styles.leftPane} style={{ width: `${leftWidth}%` }}>
-        <IDE onFeedbackReceived={handleFeedbackReceived} />
+        <HorizontalSplitter />
       </div>
       <div className={styles.resizer} onMouseDown={handleMouseDown} />
       <div className={styles.rightPane} style={{ width: `${100 - leftWidth}%` }}>

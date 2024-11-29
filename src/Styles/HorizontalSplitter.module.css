@@ -1,0 +1,11 @@
+
+
+  
+  
+  .splitter {
+    height: 5px;
+    cursor: row-resize;
+    background-color: #333; /* Adjust color if necessary */
+    z-index: 1;
+  }
+  

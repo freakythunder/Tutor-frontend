@@ -9,16 +9,27 @@ import styles from '../Styles/ChatInterface.module.css';
 import { ComponentPropsWithoutRef } from 'react';
 
 interface FormattedAIResponseProps {
-  response: string | { 
-    user_id: string | null; 
-    userMessage: string; 
-    aiResponse: string; 
-    timestamp: string; 
+  response: {
+    aiResponse: string | {
+      user_id?: string;
+      userMessage?: string;
+      aiResponse?: string;
+      timestamp?: string;
+    };
+    timestamp: string;
   };
 }
 
 const FormattedAIResponse: React.FC<FormattedAIResponseProps> = ({ response }) => {
-  const responseText = typeof response === 'string' ? response : response.aiResponse;
+  const extractMarkdownContent = (): string => {
+    const aiResponse = response.aiResponse;
+    if (typeof aiResponse === 'string') return aiResponse.trim();
+    if (typeof aiResponse === 'object') return (aiResponse.aiResponse || '').trim();
+    return '';
+  };
+
+  const markdownContent = extractMarkdownContent();
+  if (!markdownContent) return null;
 
   return (
     <div className={styles.aiResponseContainer}>
@@ -31,24 +42,38 @@ const FormattedAIResponse: React.FC<FormattedAIResponseProps> = ({ response }) =
               <SyntaxHighlighter
                 style={vscDarkPlus as any}
                 language={match[1]}
+                className={styles.codeBlock}
                 PreTag="div"
                 {...props}
               >
                 {String(children).replace(/\n$/, '')}
               </SyntaxHighlighter>
             ) : (
-              <code className={className} {...props}>
+              <code className={inline ? styles.inlineCode : ''} {...props}>
                 {children}
               </code>
             );
           },
           h3: ({ ...props }) => <h3 className={styles.aiResponseHeader} {...props} />,
-          p: ({ ...props }) => <p className={styles.aiResponseText} {...props} />,
+          p: ({ node, children, ...props }) => {
+            const content = String(children).toLowerCase();
+            const isChallenge = content.includes("try this challenge") || content.includes("challenge:");
+            return (
+              <p className={isChallenge ? styles.challengePrompt : styles.aiResponseText} {...props}>
+                {children}
+              </p>
+            );
+          },
           ul: ({ ...props }) => <ul className={styles.bulletPoints} {...props} />,
           li: ({ ...props }) => <li className={styles.bulletPoint} {...props} />,
+          
+          blockquote: ({ node, ...props }) => (
+            React.createElement('div', { className: styles.hint, ...props })
+          ),
+          
         }}
       >
-        {responseText}
+        {markdownContent}
       </ReactMarkdown>
     </div>
   );

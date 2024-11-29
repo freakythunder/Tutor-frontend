@@ -17,86 +17,98 @@
   padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 16px; /* Increased gap between conversations */
+  gap: 16px;
   box-sizing: border-box;
   width: 100%;
-}
-
-.inputContainer {
-  padding: 16px;
-  background-color: #ffffff;
-  border-top: 1px solid #ddd;
-  display: flex;
-  gap: 12px;
-  width: 100%;
-  box-sizing: border-box;
-  border-bottom-left-radius: 12px;
-  border-bottom-right-radius: 12px;
-}
-
-.inputField {
-  flex: 1;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 14px;
-  outline: none;
-  transition: border-color 0.2s;
-}
-
-.inputField:focus {
-  border-color: #007AFF;
 }
 
 .messageWrapper {
   display: flex;
   flex-direction: column;
   width: 100%;
-  gap: 8px; /* Gap between user message and AI response */
+  gap: 8px;
 }
 
 .userMessage, 
 .aiMessage {
-  padding: 8px 12px; /* Reduced padding */
+  padding: 8px 12px;
   border-radius: 18px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  box-sizing: border-box;
-  max-width: 80%;
-  position: relative;
+  box-shadow: 0 1px 2px rgba(0,  0, 0, 0.1);
 }
 
 .userMessage {
-  align-self: flex-end;
   background-color: #007AFF;
   color: white;
-}
-
-.aiMessage {
-  align-self: flex-start;
-  background-color: #ffffff;
-  color: #333;
-}
-
-.messageContent {
-  margin: 0;
-  font-size: 14px;
-  line-height: 1.4;
+  align-self: flex-end;
 }
 
 .timestamp {
-  font-size: 10px;
-  opacity: 0.7;
+  font-size: 0.8em;
+  color: #888;
   margin-top: 4px;
-  text-align: right;
 }
 
-.userMessage .timestamp {
-  color: rgba(255, 255, 255, 0.8);
+.errorMessage {
+  color: red;
+  text-align: center;
+  margin: 8px 0;
+}
+/* src/Styles/ChatInterface.module.css */
+.buttonContainer {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px;
+  background-color: #ffffff;
+  border-top: 1px solid #ddd;
+  gap: 12px;
 }
 
-.aiMessage .timestamp {
-  color: #777;
+.challengeButton,
+.helpButton { background-color: #4CAF50; /* Green */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s;
 }
+
+.challengeButton:hover,
+.helpButton:hover {
+  background-color: #45a049; /* Darker green */
+}
+
+.helpButton {
+  background-color: #f44336; /* Red */
+}
+
+.helpButton:hover {
+  background-color: #e53935; /* Darker red */
+}
+
+.actionButton {
+  padding: 10px 16px;
+  background-color: #007AFF;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.actionButton:hover {
+  background-color: #0056b3;
+}
+
+.actionButton:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
 
 /* Scrollbar styling */
 .messagesContainer::-webkit-scrollbar {
@@ -138,4 +150,78 @@
     opacity: 1; 
     transform: translateY(0); 
   }
+}
+
+/* src/Styles/ChatInterface.module.css */
+
+.aiResponseContainer {
+  background-color: #f9fafb; /* Light background for response container */
+  padding: 20px;
+  border-radius: 10px;
+  margin: 15px 0;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  font-family: 'Poppins', sans-serif;
+}
+
+.aiResponseHeader {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-top: 10px;
+}
+
+.aiResponseText {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #4b5563;
+  margin: 10px 0;
+}
+
+.bulletPoints {
+  padding-left: 20px;
+  margin: 10px 0;
+}
+
+.bulletPoint {
+  color: #374151;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.codeBlock {
+  background-color: #1e293b;
+  color: #f8fafc;
+  padding: 15px;
+  border-radius: 8px;
+  margin: 15px 0;
+  font-size: 0.9rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
+}
+
+.inlineCode {
+  background-color: #e5e7eb;
+  color: #1f2937;
+  padding: 2px 5px;
+  border-radius: 4px;
+  font-size: 0.95rem;
+}
+
+.challengePrompt {
+  background-color: #dbeafe;
+  color: #1e40af;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 15px;
+  font-weight: 500;
+}
+
+.hint {
+  background-color: #fef3c7;
+  color: #92400e;
+  padding: 10px;
+  border-left: 4px solid #f59e0b;
+  border-radius: 4px;
+  margin-top: 15px;
+  font-size: 0.95rem;
 }
