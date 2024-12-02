@@ -10,8 +10,8 @@ interface HorizontalSplitterProps {
 }
 
 const HorizontalSplitter: React.FC<HorizontalSplitterProps> = ({ chatInterfaceRef }) => {
-  const [outputHeightPercent, setOutputHeightPercent] = useState(0); // Output height in %
-  const [ideHeightPercent, setIdeHeightPercent] = useState(90); // IDE height in % (initially 90%)
+  const [outputHeightPercent, setOutputHeightPercent] = useState(30); // Output height in %
+  const [ideHeightPercent, setIdeHeightPercent] = useState(60); // IDE height in % (initially 90%)
   const [output, setOutput] = useState('');
   const containerRef = useRef<HTMLDivElement>(null);
   const splitterRef = useRef<HTMLDivElement>(null);
