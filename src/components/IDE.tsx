@@ -31,7 +31,11 @@ const IDE: React.FC<IDEProps> = ({ height, onRun }) => {
 
   return (
     <div className={styles.ideContainer}>
-
+      <div className={styles.buttonContainer}>
+        <button className={styles.runButton} onClick={handleRunCode}>
+          {isLoading ? 'Running...' : 'Run'}
+        </button>
+      </div>
       <div className={styles.editorContainer}>
       <Editor
         
@@ -49,11 +53,7 @@ const IDE: React.FC<IDEProps> = ({ height, onRun }) => {
       />
       </div>
 
-      <div className={styles.buttonContainer}>
-        <button className={styles.runButton} onClick={handleRunCode}>
-          {isLoading ? 'Running...' : 'Run'}
-        </button>
-      </div>
+
     </div>
   );
 };

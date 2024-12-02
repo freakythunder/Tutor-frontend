@@ -1,16 +1,17 @@
 import React, { useState, useRef, useCallback } from 'react';
 import HorizontalSplitter from './horizontalSplitter';
-import ChatInterface from './ChatInterface';
+import ChatInterface, { ChatInterfaceRef as ImportedChatInterfaceRef } from './ChatInterface'; // Alias the imported type
 import styles from '../Styles/ResizableContainer.module.css';
 
 interface ChatInterfaceRef {
 }
 
 const ResizableContainer: React.FC = () => {
-  const [leftWidth, setLeftWidth] = useState(60);
+  const [leftWidth, setLeftWidth] = useState(30);
   const containerRef = useRef<HTMLDivElement>(null);
   const isResizing = useRef(false);
-  const chatInterfaceRef = useRef<ChatInterfaceRef>(null);
+  const chatInterfaceRef = useRef<ImportedChatInterfaceRef>(null); // Correct ref initialization
+
 
   const handleMouseMove = useCallback((e: MouseEvent) => {
     if (!isResizing.current || !containerRef.current) return;
@@ -39,11 +40,11 @@ const ResizableContainer: React.FC = () => {
   return (
     <div className={styles.container} ref={containerRef}>
       <div className={styles.leftPane} style={{ width: `${leftWidth}%` }}>
-        <HorizontalSplitter />
+      <ChatInterface ref={chatInterfaceRef} />
       </div>
       <div className={styles.resizer} onMouseDown={handleMouseDown} />
       <div className={styles.rightPane} style={{ width: `${100 - leftWidth}%` }}>
-        <ChatInterface ref={chatInterfaceRef} />
+        <HorizontalSplitter chatInterfaceRef={chatInterfaceRef}/>
       </div>
     </div>
   );

@@ -91,9 +91,11 @@ button:hover {
 }
 
 .loadingScreen {
-  font-size: 1.1rem;
-  color: #8e44ad;
-  animation: pulse 1.5s infinite ease-in-out;
+background-color: 'white';
+ height: '100vh';
+display: 'flex';
+  justify-content: 'center';
+  align-items: 'center';
 }
 
 @keyframes pulse {

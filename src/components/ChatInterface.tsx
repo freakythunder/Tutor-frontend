@@ -5,14 +5,13 @@ import { sendMessage, getPastConversations, Message } from '../services/chatServ
 import FormattedAIResponse from './FormattedAiResponse';
 import { useAuth } from '../context/AuthContext';
 
-
-interface ChatInterfaceRef {
-  
+export interface ChatInterfaceRef {
+  addMessage: (message: string) => void;
 }
 
-interface ChatInterfaceProps {}
 
-const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>((props, ref) => {
+
+const ChatInterface = forwardRef<ChatInterfaceRef>((_, ref) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -21,9 +20,11 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>((props, r
   const token = localStorage.getItem('token');
   const username = token ? JSON.parse(atob(token.split('.')[1])).username : null;
 
-  const scrollToBottom = () => {
+const scrollToBottom = useCallback(() => {
+  setTimeout(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+  }, 100);
+}, []);
 
   useEffect(() => {
     loadPastConversationsAndWelcomeMessage();
@@ -34,6 +35,12 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>((props, r
       scrollToBottom();
     }
   }, [messages]);
+
+  useImperativeHandle(ref, () => ({
+    addMessage(message: string) {
+      handleSendMessage(message);
+    },
+  }));
 
   const loadPastConversationsAndWelcomeMessage = async () => {
     try {
@@ -87,7 +94,6 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>((props, r
       setError('Failed to load past conversations');
     }
   };
-
   const handleSendMessage = async (message: string) => {
     if (!message.trim() || isLoading) return;
   
@@ -133,7 +139,9 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>((props, r
       setIsLoading(false);
     }
   };
-  
+
+
+
   // Modify the getAIResponseMessage to handle string responses
   const getAIResponseMessage = (response: Message['aiResponse']): {
     user_id?: string;
@@ -150,7 +158,7 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>((props, r
         timestamp: new Date().toISOString()
       };
     }
-  
+
     // If it's an object, try to extract aiResponse or userMessage
     if (typeof response === 'object') {
       return {
@@ -160,7 +168,7 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>((props, r
         timestamp: response.timestamp || new Date().toISOString()
       };
     }
-  
+
     // Fallback to empty string
     return {
       user_id: 'AI',
@@ -172,14 +180,13 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>((props, r
 
   const formatTimestamp = (timestamp: string) => {
     const date = new Date(timestamp);
-    return date.toLocaleString('en-US', { 
-      month: 'short', 
-      day: 'numeric', 
-      hour: '2-digit', 
+    return date.toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
       minute: '2-digit'
     });
   };
-
 
 
   return (
@@ -204,22 +211,6 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>((props, r
         <div ref={messagesEndRef} />
       </div>
       {error && <div className={styles.errorMessage}>{error}</div>}
-      <div className={styles.buttonContainer}>
-        <button 
-          onClick={() => handleSendMessage("Done with the Challenge")}
-          disabled={isLoading}
-          className={styles.challengeButton}
-        >
-          Done with the Challenge
-        </button>
-        <button 
-          onClick={() => handleSendMessage("Need Help")}
-          disabled={isLoading}
-          className={styles.helpButton}
-        >
-          Need Help
-        </button>
-      </div>
     </div>
   );
 });
