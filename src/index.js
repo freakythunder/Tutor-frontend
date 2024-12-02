@@ -10,9 +10,9 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <Auth0Provider
   domain="dev-77xfvtq4jkx78p2i.us.auth0.com"
-  clientId="MvYdG9otTbOpowJuPFdo2I58FTmht3x6"
+  clientId= "mKZJjc2lryLUOoEsqErteQXBs8t1hsSJ"
   authorizationParams={{
-    redirect_uri: "http://localhost:3000"
+    redirect_uri: "https://platoeducation-qa.onrender.com"
   }}
 >
   <App />
