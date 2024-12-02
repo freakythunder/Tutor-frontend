@@ -16,10 +16,29 @@ const HorizontalSplitter: React.FC<HorizontalSplitterProps> = ({ chatInterfaceRe
   const containerRef = useRef<HTMLDivElement>(null);
   const splitterRef = useRef<HTMLDivElement>(null);
   const isResizing = useRef(false);
+  const [showInitialButton, setShowInitialButton] = useState(
+    () => localStorage.getItem('showInitialButton') !== 'false' // Persist state on refresh
+  ); // Controls the visibility of the "Let's Begin" button
+  const [showActionButtons, setShowActionButtons] = useState(
+    () => localStorage.getItem('showActionButtons') === 'true' // Persist state on refresh
+  );
 
   
 
+  const handleLetsBegin = () => {
+    if (chatInterfaceRef.current) {
+      chatInterfaceRef.current.addMessage("Let's Begin");
+      console.log("Let's Begin message sent from HorizontalSplitter");
 
+      // Show the two action buttons after a 2-second delay
+      setShowInitialButton(false);
+      localStorage.setItem('showInitialButton', 'false');
+      setTimeout(() => {
+        setShowActionButtons(true);
+        localStorage.setItem('showActionButtons', 'true');
+      }, 1000);
+    }
+  };
   // Handle sending "Done with the Challenge" message
   const handleSendChallengeMessage = () => {
     if (chatInterfaceRef.current) {
@@ -124,12 +143,21 @@ const HorizontalSplitter: React.FC<HorizontalSplitterProps> = ({ chatInterfaceRe
         />
       </div>
       <div className={styles.buttonContainer} style={{ position: 'absolute', bottom: 0, width: '100%', padding: '10px' }}>
-        <button onClick={() => { console.log('Challenge button clicked'); handleSendChallengeMessage(); }} className={styles.challengeButton}>
-          Done with the Challenge
-        </button>
-        <button onClick={handleSendHelpMessage} className={styles.helpButton}>
-          Need Help
-        </button>
+        {showInitialButton && (
+          <button onClick={handleLetsBegin} className={styles.beginButton}>
+            Let's Begin
+          </button>
+        )}
+        {showActionButtons && (
+          <>
+            <button onClick={handleSendChallengeMessage} className={styles.challengeButton}>
+              Done with the Challenge
+            </button>
+            <button onClick={handleSendHelpMessage} className={styles.helpButton}>
+              Need Help
+            </button>
+          </>
+        )}
       </div>
 
       
