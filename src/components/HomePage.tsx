@@ -1,23 +1,25 @@
-// src/components/HomePage.tsx
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import api from '../services/api';
-import styles from '../Styles/HomePage.module.css';
-import { useAuth } from '../context/AuthContext';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import api from "../services/api";
+import styles from "../Styles/HomePage.module.css";
+import { useAuth } from "../context/AuthContext";
 import { useAuth0 } from "@auth0/auth0-react";
 
-
 const HomePage: React.FC = () => {
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [loadingText, setLoadingText] = useState('');
-  const loadingMessages = ["Logging you in...", "Fetching your data...", "Almost there..."];
+  const [loadingText, setLoadingText] = useState("");
+  const loadingMessages = [
+    "Logging you in...",
+    "Fetching your data...",
+    "Almost there...",
+  ];
   const { loginWithRedirect, user, isAuthenticated } = useAuth0();
   const navigate = useNavigate();
   const { login } = useAuth();
 
   useEffect(() => {
-    const authenticateUser  = async () => {
+    const authenticateUser = async () => {
       if (isAuthenticated && user) {
         setLoading(true);
         setLoadingText(loadingMessages[0]);
@@ -26,30 +28,34 @@ const HomePage: React.FC = () => {
 
         const attemptLogin = async (retryCount: number) => {
           try {
-            const response = await api.post('/auth/login', { username, password });
+            const response = await api.post("/auth/login", {
+              username,
+              password,
+            });
             if (response.data?.data) {
               login(username, response.data.data.token);
-              navigate('/main');
+              navigate("/main");
             } else {
-              setErrorMessage('Invalid response from server');
+              setErrorMessage("Invalid response from server");
             }
           } catch (error: any) {
             if (retryCount > 0) {
-              console.log('Retrying login...');
+              console.log("Retrying login...");
               await attemptLogin(retryCount - 1); // Retry once
             } else {
-              setErrorMessage(error.response?.data?.message || 'Failed to authenticate.');
+              setErrorMessage(
+                error.response?.data?.message || "Failed to authenticate."
+              );
             }
           }
         };
 
         await attemptLogin(1); // Try once, with one retry
-
         setLoading(false);
       }
     };
 
-    authenticateUser ();
+    authenticateUser();
   }, [isAuthenticated, user, login, navigate]);
 
   useEffect(() => {
@@ -63,10 +69,16 @@ const HomePage: React.FC = () => {
       return () => clearInterval(interval); // Cleanup interval on unmount
     }
   }, [loading]);
-  
+
   const handleGoogleLogin = () => {
-    setErrorMessage('');
+    setErrorMessage("");
     loginWithRedirect();
+  };
+
+  const handleTryForFree = () => {
+    console.log("Try for FREE button clicked");
+    setErrorMessage("");
+    loginWithRedirect(); // Redirects to a specific "Try for FREE" page
   };
 
   return (
@@ -76,14 +88,41 @@ const HomePage: React.FC = () => {
           <h2>{loadingText}</h2>
         </div>
       ) : (
-        <div className={styles.container}>
-          <h1>Welcome to Personal Coding Tutor</h1>
-          <form className={styles.authForm}>
-            {errorMessage && <div className={styles.error}>{errorMessage}</div>}
-            <button type="button" onClick={handleGoogleLogin}>
-              Sign up or login with Google
+        <>
+          {/* Header */}
+          <header className={styles.header}>
+            <div className={styles.logo}>plato</div>
+            <button
+              className={styles.loginButton}
+              onClick={handleGoogleLogin}
+            >
+              Login
             </button>
-          </form>
+          </header>
+
+          {/* Main Content */}
+          <div className={styles.content}>
+            <h1 className={styles.title}>
+              Learn to Code.
+              <br />
+              One concept at a time...
+            </h1>
+            <p className={styles.subtitle}>
+              Learn to code in the most interactive way!
+            </p>
+            <button
+              className={styles.tryButton}
+              onClick={handleTryForFree} /* Separate handler */
+            >
+              Try for FREE →
+            </button>
+          </div>
+        </>
+      )}
+      {/* Error Message */}
+      {errorMessage && (
+        <div className={styles.error}>
+          {errorMessage}
         </div>
       )}
     </main>
