@@ -5,15 +5,22 @@ import styles from "../Styles/HomePage.module.css";
 import { useAuth } from "../context/AuthContext";
 import { useAuth0 } from "@auth0/auth0-react";
 
+// Reusable LoadingScreen Component
+const LoadingScreen: React.FC<{ message: string }> = ({ message }) => {
+  return (
+    <div className={styles.loadingScreen} aria-live="polite">
+      <h2>{message}</h2>
+    </div>
+  );
+};
+
 const HomePage: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [loadingText, setLoadingText] = useState("");
-  const loadingMessages = [
-    "Logging you in...",
-    "Fetching your data...",
-    "Almost there...",
-  ];
+  const [loading, setLoading] = useState(
+    localStorage.getItem("loading") === "true" // Persist loading state across redirects
+  );
+  const [loadingText, setLoadingText] = useState("Logging you in...");
+  const loadingMessages = ["Logging you in...", "Fetching your data...", "Almost there..."];
   const { loginWithRedirect, user, isAuthenticated } = useAuth0();
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -22,71 +29,59 @@ const HomePage: React.FC = () => {
     const authenticateUser = async () => {
       if (isAuthenticated && user) {
         setLoading(true);
-        setLoadingText(loadingMessages[0]);
-        const username = user.email;
-        const password = user.name;
+        localStorage.setItem("loading", "true"); // Ensure loading persists
+        let messageIndex = 0;
 
-        const attemptLogin = async (retryCount: number) => {
-          try {
-            const response = await api.post("/auth/login", {
-              username,
-              password,
-            });
-            if (response.data?.data) {
-              login(username, response.data.data.token);
-              navigate("/main");
-            } else {
-              setErrorMessage("Invalid response from server");
-            }
-          } catch (error: any) {
-            if (retryCount > 0) {
-              console.log("Retrying login...");
-              await attemptLogin(retryCount - 1); // Retry once
-            } else {
-              setErrorMessage(
-                error.response?.data?.message || "Failed to authenticate."
-              );
-            }
+        // Update loading messages periodically
+        const interval = setInterval(() => {
+          messageIndex = (messageIndex + 1) % loadingMessages.length;
+          setLoadingText(loadingMessages[messageIndex]);
+        }, 1000);
+
+        try {
+          const username = user.email;
+          const password = user.name;
+
+          const response = await api.post("/auth/login", { username, password });
+          if (response.data?.data) {
+            login(username, response.data.data.token);
+            navigate("/main"); // Redirect after successful login
+          } else {
+            setErrorMessage("Invalid response from server");
           }
-        };
-
-        await attemptLogin(1); // Try once, with one retry
-        setLoading(false);
+        } catch (error: any) {
+          setErrorMessage(
+            error.response?.data?.message || "Failed to authenticate."
+          );
+        } finally {
+          clearInterval(interval); // Cleanup interval
+          setLoading(false);
+          localStorage.removeItem("loading"); // Clear persistent loading state
+        }
       }
     };
 
     authenticateUser();
   }, [isAuthenticated, user, login, navigate]);
 
-  useEffect(() => {
-    if (loading) {
-      let index = 0;
-      const interval = setInterval(() => {
-        index = (index + 1) % loadingMessages.length; // Cycle through the messages
-        setLoadingText(loadingMessages[index]);
-      }, 1000);
-
-      return () => clearInterval(interval); // Cleanup interval on unmount
-    }
-  }, [loading]);
-
   const handleGoogleLogin = () => {
     setErrorMessage("");
+    setLoading(true); // Show loading before redirect
+    localStorage.setItem("loading", "true"); // Persist loading state
     loginWithRedirect();
   };
 
   const handleTryForFree = () => {
-    console.log("Try for FREE button clicked");
     setErrorMessage("");
-    loginWithRedirect(); // Redirects to a specific "Try for FREE" page
+    setLoading(true); // Show loading before redirect
+    localStorage.setItem("loading", "true"); // Persist loading state
+    loginWithRedirect();
   };
 
   return (
     <main className={styles.homePage}>
       {loading ? (
-        <div className={styles.loadingScreen} aria-live="polite">
-          <h2>{loadingText}</h2>
-        </div>
+        <LoadingScreen message={loadingText} />
       ) : (
         <>
           {/* Header */}
@@ -112,13 +107,14 @@ const HomePage: React.FC = () => {
             </p>
             <button
               className={styles.tryButton}
-              onClick={handleTryForFree} /* Separate handler */
+              onClick={handleTryForFree}
             >
               Try for FREE →
             </button>
           </div>
         </>
       )}
+
       {/* Error Message */}
       {errorMessage && (
         <div className={styles.error}>
