@@ -4,6 +4,7 @@
   flex-direction: column;
   overflow: hidden;
   height : 100%;
+  position: relative;
   
 }
 
@@ -18,9 +19,12 @@
 .buttonContainer {
   padding: 10px;
   display: flex;
-  justify-content: flex-end;
-  background-color: #252526;
-  flex :1;
+  justify-content: flex-end; /* Aligns button to the right */
+  background-color: transparent;
+  position: absolute;/* Ensure positioning context */
+  top: 0; /* Position it a bit lower from the top */
+  right: 10px; /* Position it to the right */
+  z-index: 10;/* Ensure it stays above other elements */
 }
 
 .runButton {

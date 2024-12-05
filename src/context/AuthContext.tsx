@@ -32,6 +32,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.removeItem('username');
     localStorage.removeItem('token');
     localStorage.removeItem('welcomeMessage');
+    localStorage.removeItem('showInitialButton');
+    localStorage.removeItem('showActionButtons');
     setUsername(null);
     setWelcomeMessage(null);
     setIsAuthenticated(false);
