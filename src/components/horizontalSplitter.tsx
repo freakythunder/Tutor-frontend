@@ -16,26 +16,31 @@ const HorizontalSplitter: React.FC<HorizontalSplitterProps> = ({ chatInterfaceRe
   const containerRef = useRef<HTMLDivElement>(null);
   const splitterRef = useRef<HTMLDivElement>(null);
   const isResizing = useRef(false);
-  const [showInitialButton, setShowInitialButton] = useState(
-    () => localStorage.getItem('showInitialButton') !== 'false' // Persist state on refresh
-  ); // Controls the visibility of the "Let's Begin" button
-  const [showActionButtons, setShowActionButtons] = useState(
-    () => localStorage.getItem('showActionButtons') === 'true' // Persist state on refresh
-  );
+  const [showInitialButton, setShowInitialButton] = useState(false);
+    const [showActionButtons, setShowActionButtons] = useState(false);
+
+    useEffect(() => {
+        const isNewUser  = localStorage.getItem('IsNewUser ') === 'true';
+        if (isNewUser ) {
+            setShowInitialButton(true); // Show "Let's Begin" button for new users
+        } else {
+            setShowActionButtons(true); // Show action buttons for returning users
+        }
+    }, []);
 
   
 
   const handleLetsBegin = () => {
     if (chatInterfaceRef.current) {
       chatInterfaceRef.current.addMessage("Let's Begin");
-      console.log("Let's Begin message sent from HorizontalSplitter");
+      
 
       // Show the two action buttons after a 2-second delay
       setShowInitialButton(false);
-      localStorage.setItem('showInitialButton', 'false');
+      
       setTimeout(() => {
         setShowActionButtons(true);
-        localStorage.setItem('showActionButtons', 'true');
+        
       }, 1000);
     }
   };
@@ -43,14 +48,14 @@ const HorizontalSplitter: React.FC<HorizontalSplitterProps> = ({ chatInterfaceRe
   const handleSendChallengeMessage = () => {
     if (chatInterfaceRef.current) {
       chatInterfaceRef.current.addMessage("Done with the Challenge");
-      console.log("sent message from hori");
+      
     }
   };
 
   const handleSendHelpMessage = () => {
     if (chatInterfaceRef.current) {
       chatInterfaceRef.current.addMessage("Need Help");
-      console.log("sent message from hori");
+     
     }
   };
 
@@ -142,18 +147,18 @@ const HorizontalSplitter: React.FC<HorizontalSplitterProps> = ({ chatInterfaceRe
           height={outputHeightPercent}
         />
       </div>
-      <div className={styles.buttonContainer} style={{ position: 'absolute', bottom: 0, width: '100%', padding: '10px' }}>
+      <div className={styles.buttonContainer} style={{ position: 'absolute', bottom: 0, right: 0, padding: '10px' }}>
         {showInitialButton && (
-          <button onClick={handleLetsBegin} className={styles.beginButton}>
+          <button onClick={handleLetsBegin} className={`${styles.beginButton} ${styles.button}`}>
             Let's Begin
           </button>
         )}
         {showActionButtons && (
           <>
-            <button onClick={handleSendChallengeMessage} className={styles.challengeButton}>
+            <button onClick={handleSendChallengeMessage} className={`${styles.challengeButton} ${styles.button}`}>
               Done with the Challenge
             </button>
-            <button onClick={handleSendHelpMessage} className={styles.helpButton}>
+            <button onClick={handleSendHelpMessage} className={`${styles.helpButton} ${styles.button}`}>
               Need Help
             </button>
           </>

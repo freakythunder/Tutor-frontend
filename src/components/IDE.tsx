@@ -9,7 +9,13 @@ interface IDEProps {
 }
 
 const IDE: React.FC<IDEProps> = ({ height, onRun }) => {
-  const placeholderText = '// Start typing your code here...';
+  const placeholderText = 
+  `
+  // This is the code editor where you will practice writing code. 
+  //Just follow the instructions in the section to the left. 
+  //Once you are ready, click on "Let's begin" to the bottom right. 
+  `
+ 
   const [code, setCode] = useState<string>(placeholderText);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isPlaceholderActive, setIsPlaceholderActive] = useState<boolean>(true);

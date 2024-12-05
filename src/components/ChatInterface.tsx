@@ -5,6 +5,7 @@ import { sendMessage, getPastConversations, Message } from '../services/chatServ
 import FormattedAIResponse from './FormattedAiResponse';
 import { useAuth } from '../context/AuthContext';
 
+
 export interface ChatInterfaceRef {
   addMessage: (message: string) => void;
 }

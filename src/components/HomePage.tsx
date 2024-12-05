@@ -4,7 +4,7 @@ import api from "../services/api";
 import styles from "../Styles/HomePage.module.css";
 import { useAuth } from "../context/AuthContext";
 import { useAuth0 } from "@auth0/auth0-react";
-
+import googleIcon from "../assets/icons8-google.svg";
 // Reusable LoadingScreen Component
 const LoadingScreen: React.FC<{ message: string }> = ({ message }) => {
   return (
@@ -16,9 +16,7 @@ const LoadingScreen: React.FC<{ message: string }> = ({ message }) => {
 
 const HomePage: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState("");
-  const [loading, setLoading] = useState(
-    localStorage.getItem("loading") === "true" // Persist loading state across redirects
-  );
+  const [loading, setLoading] = useState(false);
   const [loadingText, setLoadingText] = useState("Logging you in...");
   const loadingMessages = ["Logging you in...", "Fetching your data...", "Almost there..."];
   const { loginWithRedirect, user, isAuthenticated } = useAuth0();
@@ -37,14 +35,22 @@ const HomePage: React.FC = () => {
           messageIndex = (messageIndex + 1) % loadingMessages.length;
           setLoadingText(loadingMessages[messageIndex]);
         }, 1000);
+        const timeout = setTimeout(() => {
+          setLoading(false);
+          setErrorMessage("Login timed out. Please try again.");
+          // Clear local storage variables
+          localStorage.clear();
+          navigate("/");
+        }, 5000);
 
         try {
           const username = user.email;
           const password = user.name;
 
           const response = await api.post("/auth/login", { username, password });
+          clearTimeout(timeout);
           if (response.data?.data) {
-            login(username, response.data.data.token);
+            login(username, response.data.data.token, response.data.message);
             navigate("/main"); // Redirect after successful login
           } else {
             setErrorMessage("Invalid response from server");
@@ -87,12 +93,7 @@ const HomePage: React.FC = () => {
           {/* Header */}
           <header className={styles.header}>
             <div className={styles.logo}>plato</div>
-            <button
-              className={styles.loginButton}
-              onClick={handleGoogleLogin}
-            >
-              Login
-            </button>
+
           </header>
 
           {/* Main Content */}
@@ -109,7 +110,8 @@ const HomePage: React.FC = () => {
               className={styles.tryButton}
               onClick={handleTryForFree}
             >
-              Try for FREE →
+              <img src={googleIcon} alt="Google Icon" className={styles.googleIcon} />
+              Signup or Login
             </button>
           </div>
         </>
