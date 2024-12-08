@@ -1,9 +1,9 @@
-import React, { useState, useRef, useEffect, useCallback, useLayoutEffect, MutableRefObject } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useLayoutEffect , MutableRefObject } from 'react';
 import ReactDOM from 'react-dom';
-import IDE,{ IDERef } from './IDE';
+import IDE from './IDE';
 import ResizableOutput from './Output';
 import styles from '../Styles/HorizontalSplitter.module.css';
-import ChatInterface, { ChatInterfaceRef } from './ChatInterface';
+import ChatInterface , {ChatInterfaceRef} from './ChatInterface';
 
 interface HorizontalSplitterProps {
   chatInterfaceRef: MutableRefObject<ChatInterfaceRef | null>; // Correct type for ref
@@ -16,51 +16,41 @@ const HorizontalSplitter: React.FC<HorizontalSplitterProps> = ({ chatInterfaceRe
   const containerRef = useRef<HTMLDivElement>(null);
   const splitterRef = useRef<HTMLDivElement>(null);
   const isResizing = useRef(false);
-  const [showInitialButton, setShowInitialButton] = useState(false);
-  const [showActionButtons, setShowActionButtons] = useState(false);
-  const ideRef = useRef<IDERef>(null);
-  useEffect(() => {
-    const isNewUser = localStorage.getItem('IsNewUser ') === 'true';
-    if (isNewUser) {
-      setShowInitialButton(true); // Show "Let's Begin" button for new users
-    } else {
-      setShowActionButtons(true); // Show action buttons for returning users
-    }
-  }, []);
+  const [showInitialButton, setShowInitialButton] = useState(
+    () => localStorage.getItem('showInitialButton') !== 'false' // Persist state on refresh
+  ); // Controls the visibility of the "Let's Begin" button
+  const [showActionButtons, setShowActionButtons] = useState(
+    () => localStorage.getItem('showActionButtons') === 'true' // Persist state on refresh
+  );
 
-
+  
 
   const handleLetsBegin = () => {
     if (chatInterfaceRef.current) {
       chatInterfaceRef.current.addMessage("Let's Begin");
-
+      console.log("Let's Begin message sent from HorizontalSplitter");
 
       // Show the two action buttons after a 2-second delay
       setShowInitialButton(false);
-
+      localStorage.setItem('showInitialButton', 'false');
       setTimeout(() => {
         setShowActionButtons(true);
-
+        localStorage.setItem('showActionButtons', 'true');
       }, 1000);
     }
   };
   // Handle sending "Done with the Challenge" message
   const handleSendChallengeMessage = () => {
     if (chatInterfaceRef.current) {
-      chatInterfaceRef.current.addMessage("Next");
-
+      chatInterfaceRef.current.addMessage("Done with the Challenge");
+      console.log("sent message from hori");
     }
   };
 
   const handleSendHelpMessage = () => {
-    console.log("Handle send help called ");
-    
     if (chatInterfaceRef.current) {
-      console.log("Handle send help called ");
-      const currentCode = ideRef.current.getCode();
-      const helpMessage = `Need Help: ${currentCode}`; // Create the message with code
-      chatInterfaceRef.current.addMessage(helpMessage); // Send the message
-      
+      chatInterfaceRef.current.addMessage("Need Help");
+      console.log("sent message from hori");
     }
   };
 
@@ -109,9 +99,6 @@ const HorizontalSplitter: React.FC<HorizontalSplitterProps> = ({ chatInterfaceRe
     window.removeEventListener('mousemove', handleMouseMove);
     window.removeEventListener('mouseup', handleMouseUp);
   };
-  const handleBookCall = () => {
-    window.open('https://calendly.com/adityaramteke-1357/30min', '_blank'); // Replace 'YOUR_LINK_HERE' with the actual link
-  };
 
   useEffect(() => {
     if (splitterRef.current) {
@@ -129,44 +116,52 @@ const HorizontalSplitter: React.FC<HorizontalSplitterProps> = ({ chatInterfaceRe
   return (
     <div ref={containerRef} className={styles.splitterContainer} style={{ position: 'relative', height: '100%' }}>
       {/* IDE Section */}
-      <div className={styles.ideSection} style={{ height: `${ideHeightPercent}%`, overflow: 'hidden' }}>
-        <IDE ref={ideRef} height={ideHeightPercent} onRun={handleRunCode} />
+      <div
+        className={styles.ideSection}
+        style={{ height: `${ideHeightPercent}%`, overflow: 'hidden' }}
+      >
+        <IDE height={ideHeightPercent} onRun={handleRunCode} />
       </div>
 
       {/* Splitter Section */}
       <div ref={splitterRef} className={styles.splitter}></div>
 
       {/* Output Section */}
-      <div className={styles.outputSection} style={{ height: outputHeightPercent ? `${outputHeightPercent}%` : '0', display: outputHeightPercent ? 'block' : 'none' }}>
-        <ResizableOutput output={output} isLoading={false} onClose={handleCloseOutput} containerWidth={containerRef.current?.clientWidth || 0} height={outputHeightPercent} />
+      <div
+        className={styles.outputSection}
+        style={{
+          height: outputHeightPercent ? `${outputHeightPercent}%` : '0',
+          display: outputHeightPercent ? 'block' : 'none',
+        }}
+      >
+        <ResizableOutput
+          output={output}
+          isLoading={false}
+          onClose={handleCloseOutput}
+          containerWidth={containerRef.current?.clientWidth || 0}
+          height={outputHeightPercent}
+        />
+      </div>
+      <div className={styles.buttonContainer} style={{ position: 'absolute', bottom: 0, width: '100%', padding: '10px' }}>
+        {showInitialButton && (
+          <button onClick={handleLetsBegin} className={styles.beginButton}>
+            Let's Begin
+          </button>
+        )}
+        {showActionButtons && (
+          <>
+            <button onClick={handleSendChallengeMessage} className={styles.challengeButton}>
+              Done with the Challenge
+            </button>
+            <button onClick={handleSendHelpMessage} className={styles.helpButton}>
+              Need Help
+            </button>
+          </>
+        )}
       </div>
 
-      <div className={styles.buttonContainer} style={{ position: 'absolute', bottom: 0, right: 0, padding: '10px', display: 'flex', width: '100%' }}>
-        <p style={{ fontFamily: 'Sometype Mono', marginRight: '10px', fontSize: '18px', fontWeight: '600', color: '#000' }}> {/* Adjust fontSize and fontWeight as needed */}
-          Have feedback for us?
-        </p>
-        <button onClick={handleBookCall} className={`${styles.bookCallButton} ${styles.button}`}>
-          Book a Call
-        </button>
-        <div style={{ flexGrow: 1 }} /> {/* This will push the next buttons to the right */}
-        <div style={{ display: 'flex', gap: '10px' }}>
-          {showInitialButton && (
-            <button onClick={handleLetsBegin} className={`${styles.beginButton} ${styles.button}`}>
-              Let's Begin
-            </button>
-          )}
-          {showActionButtons && (
-            <>
-              <button onClick={handleSendHelpMessage} className={`${styles.helpButton} ${styles.button}`}>
-                Help
-              </button>
-              <button onClick={handleSendChallengeMessage} className={`${styles.challengeButton} ${styles.button}`}>
-                Next
-              </button>
-            </>
-          )}
-        </div>
-      </div>
+      
+      
     </div>
   );
 };
