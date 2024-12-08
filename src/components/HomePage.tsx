@@ -4,7 +4,7 @@ import api from "../services/api";
 import styles from "../Styles/HomePage.module.css";
 import { useAuth } from "../context/AuthContext";
 import { useAuth0 } from "@auth0/auth0-react";
-
+import googleIcon from "../assets/icons8-google.svg";
 // Reusable LoadingScreen Component
 const LoadingScreen: React.FC<{ message: string }> = ({ message }) => {
   return (
@@ -16,54 +16,62 @@ const LoadingScreen: React.FC<{ message: string }> = ({ message }) => {
 
 const HomePage: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState("");
-  const [loading, setLoading] = useState(
-    localStorage.getItem("loading") === "true" // Persist loading state across redirects
-  );
+  const [loading, setLoading] = useState(false);
   const [loadingText, setLoadingText] = useState("Logging you in...");
   const loadingMessages = ["Logging you in...", "Fetching your data...", "Almost there..."];
   const { loginWithRedirect, user, isAuthenticated } = useAuth0();
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  useEffect(() => {
-    const authenticateUser = async () => {
-      if (isAuthenticated && user) {
-        setLoading(true);
-        localStorage.setItem("loading", "true"); // Ensure loading persists
-        let messageIndex = 0;
+    useEffect(() => {
+    const authenticateUser = async (attempts: number = 0) => {
+      if (!isAuthenticated || !user) return; // Prevent unnecessary execution
 
-        // Update loading messages periodically
-        const interval = setInterval(() => {
-          messageIndex = (messageIndex + 1) % loadingMessages.length;
-          setLoadingText(loadingMessages[messageIndex]);
-        }, 1000);
+      setLoading(true);
+      let messageIndex = 0;
 
-        try {
-          const username = user.email;
-          const password = user.name;
+      // Update loading messages periodically
+      const interval = setInterval(() => {
+        messageIndex = (messageIndex + 1) % loadingMessages.length;
+        setLoadingText(loadingMessages[messageIndex]);
+      }, 1000);
 
-          const response = await api.post("/auth/login", { username, password });
-          if (response.data?.data) {
-            login(username, response.data.data.token);
-            navigate("/main"); // Redirect after successful login
-          } else {
-            setErrorMessage("Invalid response from server");
-          }
-        } catch (error: any) {
-          setErrorMessage(
-            error.response?.data?.message || "Failed to authenticate."
-          );
-        } finally {
-          clearInterval(interval); // Cleanup interval
-          setLoading(false);
-          localStorage.removeItem("loading"); // Clear persistent loading state
+      try {
+        const username = user.email;
+        const password = user.name;
+
+        const response = await api.post("/auth/login", { username, password });
+        clearInterval(interval);
+
+        if (response.data?.data) {
+          login(username, response.data.data.token, response.data.message);
+          navigate("/main"); // Redirect after successful login
+        } else {
+          throw new Error("Invalid response from server");
         }
+      } catch (error: any) {
+        clearInterval(interval);
+        if (attempts < 2) {
+          console.log(`Retrying login... Attempt ${attempts + 1}`);
+          authenticateUser(attempts + 1); // Retry login
+        } else {
+          setErrorMessage(
+            error.response?.data?.message || "Failed to authenticate after multiple attempts."
+          );
+          setLoading(false);
+        }
+      } finally {
+        setLoading(false);
       }
     };
 
-    authenticateUser();
+    // Trigger authentication only once per session
+    const isAlreadyAuthenticated = localStorage.getItem("authenticated") === "true";
+    if (!isAlreadyAuthenticated && isAuthenticated && user) {
+      localStorage.setItem("authenticated", "true");
+      authenticateUser();
+    }
   }, [isAuthenticated, user, login, navigate]);
-
   const handleGoogleLogin = () => {
     setErrorMessage("");
     setLoading(true); // Show loading before redirect
@@ -87,29 +95,25 @@ const HomePage: React.FC = () => {
           {/* Header */}
           <header className={styles.header}>
             <div className={styles.logo}>plato</div>
-            <button
-              className={styles.loginButton}
-              onClick={handleGoogleLogin}
-            >
-              Login
-            </button>
+
           </header>
 
           {/* Main Content */}
           <div className={styles.content}>
             <h1 className={styles.title}>
-              Learn to Code.
-              <br />
-              One concept at a time...
+            Welcome to Plato
+
             </h1>
             <p className={styles.subtitle}>
-              Learn to code in the most interactive way!
+            We've built a personal tutor to help you learn JavaScript! This is our first prototype, and we'd love your feedback. Book a call with the founders to share your feedback <a href="https://calendly.com/adityaramteke-1357/30min" target="_blank"> here.</a>
             </p>
+            
             <button
               className={styles.tryButton}
               onClick={handleTryForFree}
             >
-              Try for FREE →
+              <img src={googleIcon} alt="Google Icon" className={styles.googleIcon} />
+              Signup or Login
             </button>
           </div>
         </>
