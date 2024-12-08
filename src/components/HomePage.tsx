@@ -23,59 +23,55 @@ const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  useEffect(() => {
+    useEffect(() => {
     const authenticateUser = async (attempts: number = 0) => {
-      if (isAuthenticated && user) {
-        setLoading(true);
-        localStorage.setItem("loading", "true"); // Ensure loading persists
-        let messageIndex = 0;
+      if (!isAuthenticated || !user) return; // Prevent unnecessary execution
 
-        // Update loading messages periodically
-        const interval = setInterval(() => {
-          messageIndex = (messageIndex + 1) % loadingMessages.length;
-          setLoadingText(loadingMessages[messageIndex]);
-        }, 1000);
+      setLoading(true);
+      let messageIndex = 0;
 
-        const timeout = setTimeout(() => {
-          setLoading(false);
-          
-          // Clear local storage variables
-          localStorage.clear();
-          navigate("/");
-        }, 5000);
+      // Update loading messages periodically
+      const interval = setInterval(() => {
+        messageIndex = (messageIndex + 1) % loadingMessages.length;
+        setLoadingText(loadingMessages[messageIndex]);
+      }, 1000);
 
-        try {
-          const username = user.email;
-          const password = user.name;
+      try {
+        const username = user.email;
+        const password = user.name;
 
-          const response = await api.post("/auth/login", { username, password });
-          clearInterval(interval); // Cleanup interval
-          if (response.data?.data) {
-            login(username, response.data.data.token, response.data.message);
-            navigate("/main"); // Redirect after successful login
-          } else {
-            throw new Error("Invalid response from server");
-          }
-        } catch (error: any) {
-          if (attempts < 2) { // Retry up to 2 more times
-            console.log(`Retrying login... Attempt ${attempts + 1}`);
-            authenticateUser (attempts + 1); // Retry login
-          } else {
-            setErrorMessage(
-              error.response?.data?.message || "Failed to authenticate after multiple attempts."
-            );
-            navigate("/"); // Redirect back to home page after max retries
-          }
-        } finally {
-          setLoading(false);
-          localStorage.removeItem("loading"); // Clear persistent loading state
+        const response = await api.post("/auth/login", { username, password });
+        clearInterval(interval);
+
+        if (response.data?.data) {
+          login(username, response.data.data.token, response.data.message);
+          navigate("/main"); // Redirect after successful login
+        } else {
+          throw new Error("Invalid response from server");
         }
+      } catch (error: any) {
+        clearInterval(interval);
+        if (attempts < 2) {
+          console.log(`Retrying login... Attempt ${attempts + 1}`);
+          authenticateUser(attempts + 1); // Retry login
+        } else {
+          setErrorMessage(
+            error.response?.data?.message || "Failed to authenticate after multiple attempts."
+          );
+          setLoading(false);
+        }
+      } finally {
+        setLoading(false);
       }
     };
 
-    authenticateUser();
+    // Trigger authentication only once per session
+    const isAlreadyAuthenticated = localStorage.getItem("authenticated") === "true";
+    if (!isAlreadyAuthenticated && isAuthenticated && user) {
+      localStorage.setItem("authenticated", "true");
+      authenticateUser();
+    }
   }, [isAuthenticated, user, login, navigate]);
-
   const handleGoogleLogin = () => {
     setErrorMessage("");
     setLoading(true); // Show loading before redirect
