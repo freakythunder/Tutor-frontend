@@ -4,7 +4,30 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "react-jsx"
+    "jsx": "preserve",
+    "target": "ES2017",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "incremental": true,
+    "module": "esnext"
   },
-  "include": ["src"]
+  "include": [
+    "src",
+    "src/components/horizontalSplitter.tsx",
+    "src/components/FormattedAiResponse.tsx",
+    "src/components/Chat.tsx",
+    "src/components/Output.tsx",
+    "src/components/ResizableContainer.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
