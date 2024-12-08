@@ -100,23 +100,29 @@ const scrollToBottom = useCallback(() => {
   
     setIsLoading(true);
     setError(null);
-    console.log(message);
+    const normalizedMessage = message.trim().toLowerCase();
+
+    // Create a new user message
+    let userMessageContent = message; // Default to the input message
+  
+    if (normalizedMessage === "next") {
+      userMessageContent = "Next";
+    } else if (normalizedMessage === "let's begin") {
+      userMessageContent = "Let's begin";
+    } else {
+      userMessageContent = "Need help";
+    }
     // Create a new user message
     const newUserMessage: Message = {
       _id: Date.now().toString(),
       user_id: username || '',
-      userMessage: message,
+      userMessage: userMessageContent,
       aiResponse: "",
       timestamp: new Date().toISOString(),
     };
   
     // Check if the message starts with "Next"
-    if (message.toLowerCase() == "next") {
-      newUserMessage.userMessage = "Next";
-    } else {
-      newUserMessage.userMessage = "Need help";
-    }
-  
+    
     // Add the user message to the state immediately
     setMessages(prev => [...prev, newUserMessage]);
   

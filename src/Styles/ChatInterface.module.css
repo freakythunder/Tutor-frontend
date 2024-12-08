@@ -9,6 +9,7 @@
   position: relative;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: 'Sometype Mono', monospace; 
 }
 
 .messagesContainer {
@@ -29,22 +30,31 @@
   gap: 8px;
 }
 
-.userMessage, 
+.userMessage{
+  padding: 8px 12px;
+  border-radius: 18px;
+  box-shadow: 0 1px 2px rgba(0,  0, 0, 0.1);
+  background-color: rgb(198 219 188);
+}
 .aiMessage {
   padding: 8px 12px;
   border-radius: 18px;
   box-shadow: 0 1px 2px rgba(0,  0, 0, 0.1);
 }
+.userMessage, 
+.aiMessage {
+  font-family: 'Sometype Mono', monospace; /* Ensure messages use the new font */
+}
 
 .userMessage {
-  background-color: #007AFF;
-  color: white;
+  background-color: rgb(198 219 188);
+  color: rgb(0, 0, 0);
   align-self: flex-end;
 }
 
 .timestamp {
   font-size: 0.8em;
-  color: #888;
+  color: #0c0808;
   margin-top: 4px;
 }
 
@@ -160,7 +170,7 @@
   border-radius: 10px;
   margin: 15px 0;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Sometype Mono', monospace; /* Apply the font to the AI response container */
 }
 
 .aiResponseHeader {
