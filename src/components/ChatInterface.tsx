@@ -5,6 +5,7 @@ import { sendMessage, getPastConversations, Message } from '../services/chatServ
 import FormattedAIResponse from './FormattedAiResponse';
 import { useAuth } from '../context/AuthContext';
 
+
 export interface ChatInterfaceRef {
   addMessage: (message: string) => void;
 }
@@ -99,46 +100,66 @@ const scrollToBottom = useCallback(() => {
   
     setIsLoading(true);
     setError(null);
-    
+    console.log(message);
+    // Create a new user message
     const newUserMessage: Message = {
       _id: Date.now().toString(),
       user_id: username || '',
       userMessage: message,
       aiResponse: "",
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
   
-    // Immediately add the user message to the state
+    // Check if the message starts with "Next"
+    if (message.toLowerCase() == "next") {
+      newUserMessage.userMessage = "Next";
+    } else {
+      newUserMessage.userMessage = "Need help";
+    }
+  
+    // Add the user message to the state immediately
     setMessages(prev => [...prev, newUserMessage]);
   
     try {
+      // Send the message to the AI
       const response = await sendMessage(message);
-      
+  
       if (response.success) {
-        // Update the message with the AI response from the correct path
-        setMessages(prev => prev.map(msg => 
-          msg._id === newUserMessage._id ? {
-            ...msg,
-            aiResponse: response.data.aiResponse || "No response", // Changed from savedMessage
-            timestamp: new Date().toISOString()
-          } : msg
-        ));
+        // Update the AI response in the state
+        setMessages(prev =>
+          prev.map(msg =>
+            msg._id === newUserMessage._id
+              ? {
+                  ...msg,
+                  aiResponse: response.data.aiResponse || "No response",
+                  timestamp: new Date().toISOString(),
+                }
+              : msg
+          )
+        );
       } else {
         throw new Error('Invalid response from server');
       }
     } catch (err) {
       console.error('Error sending message:', err);
       setError('Failed to send message');
-      setMessages(prev => prev.map(msg => 
-        msg._id === newUserMessage._id ? {
-          ...msg,
-          aiResponse: "Error: Failed to get response"
-        } : msg
-      ));
+  
+      // Update the message with an error response
+      setMessages(prev =>
+        prev.map(msg =>
+          msg._id === newUserMessage._id
+            ? {
+                ...msg,
+                aiResponse: "Error: Failed to get response",
+              }
+            : msg
+        )
+      );
     } finally {
       setIsLoading(false);
     }
   };
+  
 
 
 
