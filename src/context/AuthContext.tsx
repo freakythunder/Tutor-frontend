@@ -21,11 +21,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = (username: string, token: string , message :string) => {
     localStorage.setItem('username', username);
     localStorage.setItem('token', token);
-    if (message.toLowerCase() === 'user registered') {
+    const trimmedMessage = message.trim().toLowerCase();
+    console.log('Trimmed message:', trimmedMessage); // Log the trimmed message
+    
+    if (trimmedMessage === 'user  registered') {
       localStorage.setItem('IsNewUser ', 'true'); // Store new user status
-  } else {
+      console.log('Setting IsNewUser  to true'); // Log the action
+    } else {
       localStorage.setItem('IsNewUser ', 'false'); // Store returning user status
-  }
+      console.log('Setting IsNewUser  to false'); // Log the action
+    }
     
 
     
@@ -39,6 +44,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.removeItem('welcomeMessage');
     localStorage.removeItem('showInitialButton');
     localStorage.removeItem('showActionButtons');
+    localStorage.clear();
     setUsername(null);
     setWelcomeMessage(null);
     setIsAuthenticated(false);

@@ -99,13 +99,13 @@ const HomePage: React.FC = () => {
           {/* Main Content */}
           <div className={styles.content}>
             <h1 className={styles.title}>
-              Learn to Code.
-              <br />
-              One concept at a time...
+            Welcome to Plato
+
             </h1>
             <p className={styles.subtitle}>
-              Learn to code in the most interactive way!
+            We've built a personal tutor to help you learn JavaScript! This is our first prototype, and we'd love your feedback. Book a call with the founders to share your feedback <a href="https://calendly.com/adityaramteke-1357/30min" target="_blank"> here.</a>
             </p>
+            
             <button
               className={styles.tryButton}
               onClick={handleTryForFree}

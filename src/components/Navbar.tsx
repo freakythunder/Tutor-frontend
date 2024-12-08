@@ -56,7 +56,7 @@ const Navbar: React.FC = () => {
 
   return (
     <nav className={styles.navbar}>
-      <h1 className={styles.title}>Personal Coding Tutor</h1>
+      <h1 className={styles.title}>plato</h1>
       <div className={styles.navLinks}>
         {isAuthenticated ? (
           <div className={styles.userMenu}>

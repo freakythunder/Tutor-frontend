@@ -10,8 +10,11 @@
   }
   .buttonContainer {
     display: flex;
-    justify-content: flex-end; /* Aligns buttons to the right */
-    gap: 10px; /* Space between buttons */
+    justify-content: space-between; /* Space between left and right buttons */
+    padding: 10px;
+    background-color: #ffffff; /* Optional: background color */
+    border-top: 1px solid #ddd; /* Optional: border for separation */
+    gap: 12px; /* Space between buttons */
   }
   
   .button {
@@ -29,7 +32,7 @@
   }
   
   .helpButton {
-    background-color: red; /* Red for "Need Help" */
+    background-color: rgb(189, 10, 10); /* Red for "Need Help" */
     color: white;
   }
   
@@ -52,4 +55,21 @@
   
   .beginButton:hover {
     background-color: darkgreen; /* Darker green on hover */
+  }
+  .bookCallButton {
+    background-color:rgb(167, 201, 151); /* Blue background */
+    color: rgb(8, 6, 6);
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    left: 0%;
+    transition: background-color 0.3s, transform 0.3s; 
+    z-index: 0;/* Smooth transition for hover effects */
+  }
+  
+  .bookCallButton:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    transform: scale(1.05); /* Slightly enlarge button on hover */
   }
